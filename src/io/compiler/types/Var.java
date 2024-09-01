@@ -22,25 +22,33 @@ public class Var {
 		super();
 	}
 	
-	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "VAR [id= " + this.id + ", type= " + this.type + ", isInitialized= " + this.isInitialized + "]";
+	}
 	
 	public String getId() {
 		return id;
 	}
+	
 	public void setId(String id) {
 		this.id = id;
 	}
+	
 	public Types getType() {
 		return type;
 	}
+	
 	public void setType(Types type) {
 		this.type = type;
 	}
+	
 	public boolean isInitialized() {
 		return isInitialized;
 	}
+	
 	public void setInitialized(boolean isInitialized) {
 		this.isInitialized = isInitialized;
 	}
-	
 }

@@ -14,17 +14,16 @@ public class MainClass {
 			PjLangLexer  lexer;
 			PjLangParser parser;
 			
-			lexer = new PjLangLexer(CharStreams.fromFileName("input.in"));
+			lexer = new PjLangLexer(CharStreams.fromFileName("input/test-variables.in"));
  			CommonTokenStream tokenStream = new CommonTokenStream(lexer);
  			parser = new PjLangParser(tokenStream);
- 			
+ 			parser.setTrace(true);
  			
  			System.out.println("Starting Expression Analysis");
- 			parser.primaryExpression();
+ 			parser.program();
  			System.out.println("Analisys Finished!" ); 			
- 			
- 			
-			
+ 			parser.printDeclaredVariables();
+// 			System.out.println(parser.gerenateExpressionTreeJSON());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

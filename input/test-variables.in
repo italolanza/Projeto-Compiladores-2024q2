@@ -1,0 +1,13 @@
+programa meuPrograma
+    variavel a,b: inteiro;
+    variavel c,d: real;
+    variavel x,y: texto;
+    inicio
+    a := 10;
+    b := 2 + 4 * a + 1;
+    c := 1.0;
+    d := (c + 3.0) / 2.0;
+    x := "Hello";
+    y := "World!"; 
+    fim
+fimprog
