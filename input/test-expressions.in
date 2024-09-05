@@ -1,0 +1,32 @@
+programa testeExpressoes
+    variavel a,b: inteiro;
+    variavel c,d,e,f,g: inteiro;
+    variavel h,i,j: inteiro;
+    variavel k,l,m: inteiro;
+    variavel n,o,p: inteiro;
+    variavel q: inteiro;
+    variavel x1, var2: inteiro;
+    variavel r7: inteiro;
+    inicio
+    a := 5 * ((2 + 10) + 5);
+  	b := 5 * (2 + 10) + 5;
+  	c := 2 + 5 * 2 + 6 / 3 - 2 * -1; 
+    d := (5 * 2 + 10) + 5;
+    e := (1+1) + (2 + 2);
+    f := (1+1) * (2 + 2);
+    g := (1+1) + (2 + 2) + (3 - 1);
+    h := (1+1) + (2 + 2) - (3 - 1);
+    i := (1+1) + (2 + 2) * (10 / 2);
+    j := (1+1) * (2 + 2) + (10 / 2);
+    k := (1+1) * (2 + 2) * (10 / 2);
+    l := (1+1) * (2 + 2) / (10 / 2);
+    m := (1+1) + (2 + 2) * (10 / 2) - 2;
+    n := (1+1) + (2 + 2) * (10 / 2) - (2 + 2);
+    o := ((1+1) + (2 + 2)) * (10 / 2) - (2 + 2);
+    p := (1+1) + (2 + 2) * ((10 / 2) - (2 + 2));
+    q := (1+1) + 2 + (2 * ((10 / 2) - (2 + 2)));
+    x1 := a + b * (4 - 1);
+    var2 := x1 + x1;
+    r7 :=  var2 / 2;
+    fim
+fimprog

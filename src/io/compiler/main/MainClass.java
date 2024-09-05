@@ -14,10 +14,10 @@ public class MainClass {
 			PjLangLexer  lexer;
 			PjLangParser parser;
 			
-			lexer = new PjLangLexer(CharStreams.fromFileName("input/test-variables.in"));
+			lexer = new PjLangLexer(CharStreams.fromFileName("input/test-expressions.in")); 
  			CommonTokenStream tokenStream = new CommonTokenStream(lexer);
  			parser = new PjLangParser(tokenStream);
- 			parser.setTrace(true);
+// 			parser.setTrace(true);
  			
  			System.out.println("Starting Expression Analysis");
  			parser.program();

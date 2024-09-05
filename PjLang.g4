@@ -105,13 +105,11 @@ assignment
         ID
         {
             // verifica se a variavel existe
-            System.out.println("assignment: new assignment to variable - " + _input.LT(-1).getText());
             if (!isDeclared(_input.LT(-1).getText())) {
                 throw new UndefinedExpression("Undeclared Variable: " + _input.LT(-1).getText());
             }
 
             // salva o ID da variavel para o caso dela nao ter sido inicilizada antes
-            System.out.println("assignment: is variable '" + _input.LT(-1).getText() + "' initialized? - " + symbolTable.get(_input.LT(-1).getText()).isInitialized());
             if (!symbolTable.get(_input.LT(-1).getText()).isInitialized()){
                 leftSideID = _input.LT(-1).getText();
             }
@@ -123,18 +121,14 @@ assignment
         PV
         {
             // verifica se a varaivel e o resultado da expressao possuem o mesmo tipo
-            System.out.println("assignment: Left  Side Expression Type = " + leftSide);
-            System.out.println("assignment: Right Side Expression Type = " + rightSide);
             if (leftSide.getValue() != rightSide.getValue()) {
                 throw new AssignmentException("Type Mismatching on Assignment: left side= " + leftSide + ", right side= " + rightSide);
             }
                        
             if (!symbolTable.get(leftSideID).isInitialized()){
                 symbolTable.get(leftSideID).setInitialized(true);
+                symbolTable.get(leftSideID).setValue(expressionStack.peek().evaluate());
             }
-
-            System.out.println("assignment: expression evaluate = " + expressionStack.peek().evaluate());
-            System.out.println("assignment: expression evaluate = " + expressionStack.peek().toString());
         }
         ;
 
@@ -180,24 +174,32 @@ term :
      factor
      ((OP_MUL | OP_DIV)
      {
-        System.out.println();
         BinaryExpression bin = new BinaryExpression(_input.LT(-1).getText().charAt(0));
-        
-        if ( expressionStack.peek() instanceof UnaryExpression ) {  // o que veio antes e uma expressao unica, isto e, um operador simples/nao e uma operacao binaria - soma ou subtracao
-            bin.setLeft(expressionStack.pop());                     // desempilha e transforma ele em um membro da multiplicacao
+        char lastTolken = _input.LT(-2).getText().charAt(0);
+
+        // o que veio antes e uma expressao unica, isto e, um operador simples/nao e uma operacao binaria - soma ou subtracao
+        // desempilha e transforma ele em um membro da multiplicacao
+        if ( expressionStack.peek() instanceof UnaryExpression ) {
+            bin.setLeft(expressionStack.pop());
         }
-        else { // o que veio antes e uma expressao binaria, isto e, uma operacao
-           
+        // o que veio antes e uma expressao binaria, isto e, uma operacao
+        else {
             BinaryExpression father = (BinaryExpression) expressionStack.pop();
 
+            // caso especial em que o ultimo elemento lido e um "fecha parentesis"
+            // atribui o lado esquerdo como a operacao binaria
+            if ( lastTolken == ')' ) {
+                bin.setLeft(father);
+            }
             // substitui o termo direito da operacao anterior pela nova operacao
             // e adiciona o termo direito da operacao anterior como termo esquerdo
             // da nova operacao (procedencia menor)
-            if (father.getOperation() == '-' || father.getOperation() == '+') {
+            else if (father.getOperation() == '+' || father.getOperation() == '-') {
                 bin.setLeft(father.getRight());
                 father.setRight(bin);
             }
-            else {  // operacao anterior possui mesma procedencia, entao nao precisa alterar a ordem das operacoes
+            // operacao anterior possui mesma procedencia, entao nao precisa alterar a ordem das operacoes
+            else {    
                 bin.setLeft(father);
                 expressionStack.push(bin);
             }
@@ -209,29 +211,29 @@ term :
         expressionStack.push(bin);
      }
      )*
-             {
-            // verifica se a expressao esta correta (operando com tipos corretos - basicamente numero com numero)
-            if ( expressionStack.peek() instanceof BinaryExpression ) {
-                Types leftOperatorType = ((BinaryExpression)expressionStack.peek()).getLeft().evaluateType();
-                Types rightOperatorType =  ((BinaryExpression)expressionStack.peek()).getRight().evaluateType();
-                
-                // verifica se nenhum dos operadores e do tipo TEXT
-                if (leftOperatorType == Types.TEXT || rightOperatorType == Types.TEXT) {
-                    throw new ExpressionException("Operator type mismatching. Trying to operate with a text type!");
-                }
+    {
+        // verifica se a expressao esta correta (operando com tipos corretos - basicamente numero com numero)
+        if ( expressionStack.peek() instanceof BinaryExpression ) {
+            Types leftOperatorType = ((BinaryExpression)expressionStack.peek()).getLeft().evaluateType();
+            Types rightOperatorType =  ((BinaryExpression)expressionStack.peek()).getRight().evaluateType();
+            
+            // verifica se nenhum dos operadores e do tipo TEXT
+            if (leftOperatorType == Types.TEXT || rightOperatorType == Types.TEXT) {
+                throw new ExpressionException("Operator type mismatching. Trying to operate with a text type!");
+            }
 
-                // verifica se os ambos operadores da expressao possuem o mesmo tipo
-                if ( leftOperatorType != rightOperatorType ) {
-                    throw new ExpressionException("Operator type mismatching: left type= " + leftOperatorType + ", right type= " + rightOperatorType);
-                }
+            // verifica se os ambos operadores da expressao possuem o mesmo tipo
+            if ( leftOperatorType != rightOperatorType ) {
+                throw new ExpressionException("Operator type mismatching: left type= " + leftOperatorType + ", right type= " + rightOperatorType);
             }
         }
+    }
      ;
 
 
 factor
         :
-        '(' expression ')'
+        '(' expression ')' 
         | literal
         | ID
         {
@@ -242,18 +244,26 @@ factor
 
             // verifica se a variavel foi inicializada
             if (!symbolTable.get(_input.LT(-1).getText()).isInitialized()) {
-                throw new ExpressionException("Variable " + _input.LT(-1).getText() + "was not initialized!");
+                throw new ExpressionException("Variable " + "<" + _input.LT(-1).getText() + ">" + " was not initialized!");
             }
 
+            
+            Var v = symbolTable.get(_input.LT(-1).getText());
+
             // salva o tipo da variavel caso nao tenha nada salvo
-            if (rightSide == null) {
-                rightSide = symbolTable.get(_input.LT(-1).getText()).getType();
+            if (rightSide == null) {    
+                rightSide = v.getType();
             }
+            // substitui o valor do factor se o tipo de variavel possuir um valor maior
+            // inteiro == 1, real == 2, texto == 3;
             else {
-                if (symbolTable.get(_input.LT(-1).getText()).getType().getValue() > rightSide.getValue()) {
-                    rightSide = symbolTable.get(_input.LT(-1).getText()).getType();
+                if (v.getType().getValue() > rightSide.getValue()) {
+                    rightSide = v.getType();
                 }
             }
+            
+            UnaryExpression element = new UnaryExpression(v.getValue(), v.getType());
+            expressionStack.push(element);
         }
         ;
 

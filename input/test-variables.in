@@ -3,11 +3,11 @@ programa meuPrograma
     variavel c,d: real;
     variavel x,y: texto;
     inicio
-    a := 10;
-    b := 2 + 4 * a + 1;
-    c := 1.0;
-    d := (c + 3.0) / 2.0;
-    x := "Hello";
-    y := "World!"; 
+    a := 5;
+    b := -5;
+    c := 2.0;
+    d := 3.14;
+    x := "Nao sou um numero!";
+    y := "eu tbm nao!";
     fim
 fimprog
