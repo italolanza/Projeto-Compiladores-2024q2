@@ -120,9 +120,15 @@ assignment
         expression
         PV
         {
-            // verifica se a varaivel e o resultado da expressao possuem o mesmo tipo
+            // verifica se a varaivel e o resultado da expressao possuem tipos compativeis
             if (leftSide.getValue() != rightSide.getValue()) {
-                throw new AssignmentException("Type Mismatching on Assignment: left side= " + leftSide + ", right side= " + rightSide);
+                if ( leftSide == Types.REALNUMBER && rightSide == Types.INTEGER) {
+                    // TODO: Candidato a Warning de perda de precisao!!
+                }
+                else {
+                    // variaveis de tipos nao compativeis
+                    throw new AssignmentException("Type Mismatching on Assignment: left side= " + leftSide + ", right side= " + rightSide);
+                }
             }
                        
             if (!symbolTable.get(leftSideID).isInitialized()){
@@ -163,7 +169,12 @@ expression
 
                 // verifica se os ambos operadores da expressao possuem o mesmo tipo
                 if ( leftOperatorType != rightOperatorType ) {
-                    throw new ExpressionException("Operator type mismatching: left type= " + leftOperatorType + ", right type= " + rightOperatorType);
+                    // atribuindo um numero real a uma variavel do tipo inteira
+                    if ( leftOperatorType == Types.INTEGER && rightOperatorType == Types.REALNUMBER) {
+                        // TODO: Candidato a Warning de perda de precisao!!
+                        // throw new ExpressionException("Operator type mismatching: left type= " + leftOperatorType + ", right type= " + rightOperatorType);    
+
+                    }
                 }
             }
         }
@@ -221,29 +232,27 @@ term :
             if (leftOperatorType == Types.TEXT || rightOperatorType == Types.TEXT) {
                 throw new ExpressionException("Operator type mismatching. Trying to operate with a text type!");
             }
-
-            // verifica se os ambos operadores da expressao possuem o mesmo tipo
-            if ( leftOperatorType != rightOperatorType ) {
-                throw new ExpressionException("Operator type mismatching: left type= " + leftOperatorType + ", right type= " + rightOperatorType);
-            }
         }
+        rightSide = expressionStack.peek().evaluateType();
     }
      ;
 
 
 factor
         :
-        '(' expression ')' 
+        '(' expression ')'
         | literal
         | ID
         {
             // verifica se a variavel existe
             if (!isDeclared(_input.LT(-1).getText())) {
+                // TODO: Candidato a Warning !!
                 throw new ProjectException("Undeclared Variable: " + _input.LT(-1).getText());
             }
 
             // verifica se a variavel foi inicializada
             if (!symbolTable.get(_input.LT(-1).getText()).isInitialized()) {
+                // TODO: Candidato a Warning !!
                 throw new ExpressionException("Variable " + "<" + _input.LT(-1).getText() + ">" + " was not initialized!");
             }
 
@@ -297,7 +306,7 @@ literal
             UnaryExpression element = new UnaryExpression(Double.parseDouble(_input.LT(-1).getText()), Types.REALNUMBER);
             expressionStack.push(element);
         }
-        | TEXT
+        | STRING
         {
             if (rightSide == null) {
                 rightSide = Types.TEXT;
@@ -322,8 +331,8 @@ NUM_REAL : ('-')?[0-9]+'.'[0-9]+
 NUMBER : NUM_INT | NUM_REAL
        ;
 
-TEXT : '"' ( [a-z] | [A-Z] | [0-9] | ',' | '.' | ' ' | '-' | '!' | '?' )* '"'
-     ;
+STRING : '"' ( [a-z] | [A-Z] | [0-9] | ',' | '.' | ' ' | '-' | '+' | '*' | '/' | '!' | '?' )* '"'
+       ;
 
 ID : [a-zA-Z_] [a-zA-Z_0-9]*
    ;

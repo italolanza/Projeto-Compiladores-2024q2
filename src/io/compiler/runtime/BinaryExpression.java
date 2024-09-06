@@ -51,15 +51,21 @@ public class BinaryExpression extends AbstractExpression {
 	public Types evaluateType() {	
 		Types leftType = left.evaluateType();
 		Types rightType = right.evaluateType();
-		
+
 		if (leftType == Types.TEXT || rightType == Types.TEXT ) {
     		throw new ExpressionException("Operator type mismatching. Trying to operate with a text type!");
 		}
 		else if (leftType == Types.REALNUMBER ||  rightType == Types.REALNUMBER ) {
 			return Types.REALNUMBER;
 		}
+		// ambos os lados da expressao sao do tipo INTEGER
 		else {
-			return Types.INTEGER; 
+			if ((this.operation == '/') && (this.left.evaluate() % this.right.evaluate() != 0)) {
+				return Types.REALNUMBER;
+			}	
+			else {
+				return Types.INTEGER;
+			}
 		}
 	}
 

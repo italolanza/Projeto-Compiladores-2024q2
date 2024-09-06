@@ -8,8 +8,7 @@ Projeto da Disciplina de Compiladores e Interpretadores cujo o objetivo e a cria
 - [ ] Possui a estrutura `if`.. `else`;
 - [ ] Possui estrutura de controle `while`/`do while`;
 - [X] Operações Aritméticas executadas corretamente;
-- [/] Atribuições realizadas corretamente;
-  - **04/Sep**: _Funcionando parcialmente_. Precisa investigar o bug da atribuicao de tipos diferentes;
+- [X] Atribuições realizadas corretamente;
 - [ ] Possui operações de _Entrada_ e _Saída_;
 - [X] Aceita números decimais;
 - [X] Verificar se a variável já foi previamente declarada;
@@ -27,6 +26,7 @@ Projeto da Disciplina de Compiladores e Interpretadores cujo o objetivo e a cria
 
 - [ ] Editor Highlight (simulando uma pequena IDE);
 - [ ] Avaliador de expressões aritméticas;
+  - **05/Sep**: Precisa de uma definicao do professor do que o avaliador precisa fazer
 - [ ] Inserção de Operadores lógicos;
 - [ ] Geração de várias linguagens-alvo;
 - [ ] Uma API Rest para implementação do compilador;
@@ -47,6 +47,8 @@ java -cp antlr-4.13.2-complete.jar org.antlr.v4.Tool PjLang.g4 -o src\io\compile
 
 - ~~Colocando d = d funciona mesmo sem d ter sido inicializado previamente;~~
 - ~~Operacao do objeto _texto_ esta funcionando (nao deveria);~~
-- Investigar porque quando temos um numero quebrado nao esta reclamando sobre o diferente tipo de variavel sendo atribuida;
-  - _Nota_: Provavelmente preciso colocar uma verificacao na hora da divisao para ver se o numero e divisivel sem sobra;
-  - _Nota 2_: Outra opcao e fazer a verificacao dentro do `evaluateType()` da classe `BinaryExpression`;
+- ~~Investigar porque quando temos um numero quebrado nao esta reclamando sobre o diferente tipo de variavel sendo atribuida;~~
+  ~~- _Nota_: Provavelmente preciso colocar uma verificacao na hora da divisao para ver se o numero e divisivel sem sobra;~~
+  ~~- _Nota 2_: Outra opcao e fazer a verificacao dentro do `evaluateType()` da classe `BinaryExpression`;~~
+~~- Investigar bug em que variaveis do tipo `texto` recebem valore do tipo `inteiro` e do tipo `real` sem estarem entre parentesis;~~
+~~- Investigar bug em que variaveis do tipo `texto` nao reconhecem operacoes entre aspas como texto;~~
