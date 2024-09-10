@@ -5,7 +5,9 @@ Projeto da Disciplina de Compiladores e Interpretadores cujo o objetivo e a cria
 ## Requisitos Minimos do Projeto
 
 - [X] Possui 2 tipos de variáveis;
-- [ ] Possui a estrutura `if`.. `else`;
+- [/] Possui a estrutura `if`.. `else`;
+  - **10/Sep:** Implementacao quase funcional do `se`/`senao`;
+    - Unico problema que precisa ser resolvido e o do loop infinito/StackOverflow quando ha If`s aninhados;
 - [ ] Possui estrutura de controle `while`/`do while`;
 - [X] Operações Aritméticas executadas corretamente;
 - [X] Atribuições realizadas corretamente;
@@ -52,3 +54,7 @@ java -cp antlr-4.13.2-complete.jar org.antlr.v4.Tool PjLang.g4 -o src\io\compile
   ~~- _Nota 2_: Outra opcao e fazer a verificacao dentro do `evaluateType()` da classe `BinaryExpression`;~~
 ~~- Investigar bug em que variaveis do tipo `texto` recebem valore do tipo `inteiro` e do tipo `real` sem estarem entre parentesis;~~
 ~~- Investigar bug em que variaveis do tipo `texto` nao reconhecem operacoes entre aspas como texto;~~
+- O _parser_ nao consegue diferenciar o "-1" em uma expressao como "5-1" sem que haja um espaco entre o operador e o numero;
+- Comandos `se`/`senao` aninhados causam StackOverflow;
+  - Precisa investigar.
+  

@@ -18,6 +18,9 @@ grammar PjLang;
     private Types leftSide = null;
     private String leftSideID = null;
     private Types rightSide = null;
+    private String strExpr = "";
+    private IFCommand currentIfCommand;
+    private AssignmentCommand currentAssignmentCommand;
     private AbstractExpression expStackTop = null;
 
     private Stack<ArrayList<AbstractCommand>> commandStackList = new Stack<ArrayList<AbstractCommand>>();
@@ -97,24 +100,78 @@ variableDeclaration
         PV
         ;
 
-command : assignment
+command : 
+        assignment
+        | cmdIF
         ;
+
+cmdIF :
+        'se' 
+        {
+            // cria lista uma nova lista de comandos e adiciona na pilha de comandos
+            commandStackList.push(new ArrayList<AbstractCommand>());
+            strExpr = "";
+            currentIfCommand = new IFCommand();
+        }
+        OP
+        expression
+        OP_REL
+        {
+            strExpr += _input.LT(-1).getText();
+        }
+        expression
+        CP
+        {
+            // salva expressao/condicional do If
+            currentIfCommand.setExpression(strExpr);
+        }
+        'entao'
+        command+
+        {
+            // retira a lista de comandos da pilha e salva na lista de comandos "True"
+            currentIfCommand.setTrueList(commandStackList.pop());
+        }
+        ('senao'
+        {
+            // cria uma nova entrada na pilha para 
+            // armazenar os comandos de dentro do "False"
+            commandStackList.push(new ArrayList<AbstractCommand>());
+        }
+        command+
+        {
+            // retira a lista de comandos da pilha e salva na lista de comandos "False"
+            currentIfCommand.setFalseList(commandStackList.pop());
+        }
+        )?
+        'fimse'
+        {
+            commandStackList.peek().add(currentIfCommand);
+        }
+      ;
 
 assignment
         : 
         ID
         {
+            // salva valor do tolken ID
+            String id = _input.LT(-1).getText();
+            
             // verifica se a variavel existe
-            if (!isDeclared(_input.LT(-1).getText())) {
-                throw new UndefinedExpression("Undeclared Variable: " + _input.LT(-1).getText());
+            if (!isDeclared(id)) {
+                throw new UndefinedExpression("Undeclared Variable: " + id);
             }
 
             // salva o ID da variavel para o caso dela nao ter sido inicilizada antes
-            if (!symbolTable.get(_input.LT(-1).getText()).isInitialized()){
-                leftSideID = _input.LT(-1).getText();
+            if (!symbolTable.get(id).isInitialized()){
+                leftSideID = id;
             }
 
-            leftSide = symbolTable.get(_input.LT(-1).getText()).getType();
+            leftSide = symbolTable.get(id).getType();
+            
+            // reseta a variavel que armazena a expressao/tolkens lidos e
+            // cria nova uma variavel do tipo AssignmentCommand
+            strExpr = "";
+            currentAssignmentCommand = new AssignmentCommand(symbolTable.get(id));
         }
         OP_ASGN
         expression
@@ -130,26 +187,37 @@ assignment
                     throw new AssignmentException("Type Mismatching on Assignment: left side= " + leftSide + ", right side= " + rightSide);
                 }
             }
-                       
+
+            // primeira vez que a variavel esta sendo inicializada
             if (!symbolTable.get(leftSideID).isInitialized()){
                 symbolTable.get(leftSideID).setInitialized(true);
                 symbolTable.get(leftSideID).setValue(expressionStack.peek().evaluate());
             }
+
+            // salva expressao lida no AssignmentCommand
+            // e adiciona o novo comando na stack de comandos
+            currentAssignmentCommand.setExpression(strExpr);
+            commandStackList.peek().add(currentAssignmentCommand);
         }
         ;
 
 
 expression
         :
-        term
+        term 
+        {
+            strExpr += _input.LT(-1).getText();
+        }
         ((OP_SUM | OP_SUB)
         {
+            strExpr += _input.LT(-1).getText();
             BinaryExpression bin = new BinaryExpression(_input.LT(-1).getText().charAt(0));
             bin.setLeft(expressionStack.pop());
             expressionStack.push(bin);
         }
         term
         {
+            strExpr += _input.LT(-1).getText();
             AbstractExpression top = expressionStack.pop();                     // desempilha o ultimo termo adicionado
             BinaryExpression root = (BinaryExpression) expressionStack.pop();   // desempinha a operacao binaria
             root.setRight(top);                                                 // atribui o membro direito da expressao com o ultimo termo
@@ -362,7 +430,13 @@ DP : ':'
    ;
 
 PV : ';'
-   ;			
+   ;
+
+OP : '('
+   ;
+
+CP : ')'
+   ;
 
 WS :  ( ' ' | '\n' | '\r' | '\t' ) -> skip
    ;
