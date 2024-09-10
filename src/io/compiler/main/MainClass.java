@@ -4,8 +4,8 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-import io.compiler.core.PjLangLexer;
-import io.compiler.core.PjLangParser;
+import io.compiler.antlr.PjLangLexer;
+import io.compiler.antlr.PjLangParser;
 
 public class MainClass {
 

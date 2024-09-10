@@ -1,4 +1,4 @@
-package io.compiler.runtime;
+package io.compiler.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -35,7 +35,7 @@ Projeto da Disciplina de Compiladores e Interpretadores cujo o objetivo e a cria
 ## Comando para atualizar ANTLR Parser
 
 ```bash
-java -cp antlr-4.13.2-complete.jar org.antlr.v4.Tool PjLang.g4 -o src\io\compiler\core -package io.compiler.core
+java -cp antlr-4.13.2-complete.jar org.antlr.v4.Tool PjLang.g4 -o src\io\compiler\antlr -package io.compiler.antlr
 ```
 
 ## Ideias
