@@ -25,7 +25,7 @@ replay_pid*
 
 # ANTLR
 .antlr/
-src/io/compiler/core/
+src/io/compiler/antlr/
 
 # IntelliJ
 .idea/
