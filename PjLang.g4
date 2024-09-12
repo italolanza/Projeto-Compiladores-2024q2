@@ -103,7 +103,58 @@ variableDeclaration
 command : 
         assignment
         | cmdIF
+        | cmdWrite
+        | cmdRead
         ;
+
+cmdRead :   
+            'leia'
+            OP
+            ID
+            {
+                // salva valor do tolken ID
+                String id = _input.LT(-1).getText();
+            
+                // verifica se a variavel existe
+                if (!isDeclared(id)) {
+                    throw new UndefinedExpression("Undeclared Variable: " + id);
+                }
+
+                // inicializa a variavel que vai receber o valor
+                symbolTable.get(id).setInitialized(true);
+                
+                // cria o commando de leitura e adiciona na lista de comandos
+                AbstractCommand readCommand = new ReadCommand(symbolTable.get(id));
+                commandStackList.peek().add(readCommand);
+            }
+            CP
+            PV
+            {
+                rightSide = null;
+            }
+        ;
+
+cmdWrite : 
+            'escreva'
+            {
+                strExpr = "";
+            }
+            OP
+            expression
+            {
+                // salva expressao lida
+                String exp = strExpr
+                
+                //cria novo comando de escrita
+                AbstractCommand writeCommand = new WriteCommand(exp);
+                commandStackList.peek().add(writeCommand);
+            }
+            CP
+            PV
+            {
+                rightSide = null;
+            }
+         ;
 
 cmdIF :
         'se' 

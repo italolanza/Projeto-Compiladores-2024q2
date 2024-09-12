@@ -20,7 +20,7 @@ public class MainClass {
 			PjLangLexer  lexer;
 			PjLangParser parser;
 			
-			lexer = new PjLangLexer(CharStreams.fromFileName("input/test-ifcommand-complex.in")); 
+			lexer = new PjLangLexer(CharStreams.fromFileName("input/test-writecommand.in")); 
  			CommonTokenStream tokenStream = new CommonTokenStream(lexer);
  			parser = new PjLangParser(tokenStream);
 // 			parser.setTrace(true);

@@ -9,7 +9,7 @@ Projeto da Disciplina de Compiladores e Interpretadores cujo o objetivo e a cria
 - [ ] Possui estrutura de controle `while`/`do while`;
 - [X] Operações Aritméticas executadas corretamente;
 - [X] Atribuições realizadas corretamente;
-- [ ] Possui operações de _Entrada_ e _Saída_;
+- [X] Possui operações de _Entrada_ e _Saída_;
 - [X] Aceita números decimais;
 - [X] Verificar se a variável já foi previamente declarada;
 - [ ] Verificar se a variável foi declarada e não foi usada;
@@ -35,7 +35,7 @@ Projeto da Disciplina de Compiladores e Interpretadores cujo o objetivo e a cria
 ## Comando para atualizar ANTLR Parser
 
 ```bash
-java -cp antlr-4.13.2-complete.jar org.antlr.v4.Tool PjLang.g4 -o src\io\compiler\core -package io.compiler.core
+java -cp antlr-4.13.2-complete.jar org.antlr.v4.Tool PjLang.g4 -o src\io\compiler\antlr -package io.compiler.antlr
 ```
 
 ## Ideias
@@ -52,7 +52,6 @@ java -cp antlr-4.13.2-complete.jar org.antlr.v4.Tool PjLang.g4 -o src\io\compile
   ~~- _Nota 2_: Outra opcao e fazer a verificacao dentro do `evaluateType()` da classe `BinaryExpression`;~~
 ~~- Investigar bug em que variaveis do tipo `texto` recebem valore do tipo `inteiro` e do tipo `real` sem estarem entre parentesis;~~
 ~~- Investigar bug em que variaveis do tipo `texto` nao reconhecem operacoes entre aspas como texto;~~
-- O _parser_ nao consegue diferenciar o "-1" em uma expressao como "5-1" sem que haja um espaco entre o operador e o numero;
 ~~- Comandos `se`/`senao` aninhados causam StackOverflow;~~
   ~~- Precisa investigar.~~
-  
+- O _parser_ nao consegue diferenciar o "-1" em uma expressao como "5-1" sem que haja um espaco entre o operador e o numero;

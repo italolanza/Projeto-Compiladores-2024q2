@@ -23,7 +23,7 @@ public class AssignmentCommand extends AbstractCommand {
 	}
 
 	@Override
-	String generateTarget() {
+	public String generateTarget() {
 		
 		StringBuilder str = new StringBuilder();
 		

@@ -21,7 +21,7 @@ public class IFCommand extends AbstractCommand {
 	}
 
 	@Override
-	String generateTarget() {
+	public String generateTarget() {
 		
 		StringBuilder str = new StringBuilder();
 		str.append("    if (" + expression + ") {\n");
