@@ -14,7 +14,7 @@ public class MainClass {
 			PjLangLexer  lexer;
 			PjLangParser parser;
 			
-			lexer = new PjLangLexer(CharStreams.fromFileName("input/test-variables.in")); 
+			lexer = new PjLangLexer(CharStreams.fromFileName("input/test-general.in"));
  			CommonTokenStream tokenStream = new CommonTokenStream(lexer);
  			parser = new PjLangParser(tokenStream);
  			//parser.setTrace(true);
