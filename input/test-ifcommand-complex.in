@@ -7,44 +7,81 @@ programa meuPrograma
 		b := -1;
 	
 	
-		se ((b + 2) >= 0) entao
-			b := 10;
+		se ( (b + 1) >= 0 ) entao
+			se ( (b + 2) >= 0 ) entao
+				b := 3;
+			fimse
+		fimse
+		
+		se ( (b + 1) >= 0 ) entao
+			se ( (b + 2) >= 0 ) entao
+				se ( (b + 3) >= 0 ) entao
+					b := 42;
+				fimse
+			fimse
 		fimse
 	
 		se (a > 5) entao
-			a := a + 5;
+			se ( (b + 2) >= 2 + 4 ) entao
+				b := 10;
+			fimse
 		senao
-		    a := 0;
+	    	se ( (b + 1) >= 0 ) entao
+				b := 3;
+			fimse
 		fimse
 		
-		se ((b + 2) >= 0) entao
+		se ( (b + 2) >= 0 ) entao
 			b := 10;
 		senao
-			b := 0;
-		fimse
-		
-		se (a > 5) entao
-			se ((b + 2) >= 0) entao
-				b := 10;
+			se ( (b + 1) >= 0 ) entao
+				se ( (b + 2) >= 0 ) entao
+					se ( (b + 3) >= 0 ) entao
+						b := 42;
+					fimse
+				fimse
 			fimse
-		senao
-		    a := 0;
 		fimse
 		
-		
 		se (a > 5) entao
-			se ((b + 2) >= 0) entao
-				b := 10;
+			se (a < b) entao
+				b := a;
 			senao
-		    	a := 0;
+				a := b;
 			fimse
 		senao
-		    se ((a + 5) >= 0) entao
-				b := 10;
+			se (a < b) entao
+				b := a;
+			senao
+				a := b;
 			fimse
 		fimse
 		
 		
-		
+		se (a > 5) entao
+			se (a < b) entao
+				se (a > 5) entao
+					se (a < b) entao
+						b := a;
+					senao
+						a := b;
+					fimse
+				senao
+					se (a < b) entao
+						b := a;
+					senao
+						a := b;
+					fimse
+				fimse
+			senao
+				a := b;
+			fimse
+		senao
+			se (a < b) entao
+				b := a;
+			senao
+				a := b;
+			fimse
+		fimse
 	fim
 fimprog

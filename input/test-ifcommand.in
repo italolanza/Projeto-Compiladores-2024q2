@@ -6,7 +6,7 @@ programa meuPrograma
 		a := 2;
 		b := -1;
 	
-		se ((a + 2) >= 0) entao
+		se ( (a + 2) >= 0 ) entao
 			b := 10;
 		fimse
 	

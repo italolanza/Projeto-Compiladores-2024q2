@@ -19,7 +19,7 @@ grammar PjLang;
     private String leftSideID = null;
     private Types rightSide = null;
     private String strExpr = "";
-    private IFCommand currentIfCommand;
+    private Stack<IFCommand> ifCmdStack = new Stack<IFCommand>();
     private AssignmentCommand currentAssignmentCommand;
     private AbstractExpression expStackTop = null;
 
@@ -111,25 +111,26 @@ cmdIF :
             // cria lista uma nova lista de comandos e adiciona na pilha de comandos
             commandStackList.push(new ArrayList<AbstractCommand>());
             strExpr = "";
-            currentIfCommand = new IFCommand();
+            ifCmdStack.push(new IFCommand());
         }
         OP
         expression
         OP_REL
         {
+            // salva o operador operacional na string de expressoes
             strExpr += _input.LT(-1).getText();
         }
         expression
         CP
         {
             // salva expressao/condicional do If
-            currentIfCommand.setExpression(strExpr);
+            ifCmdStack.peek().setExpression(strExpr);
         }
         'entao'
         command+
         {
             // retira a lista de comandos da pilha e salva na lista de comandos "True"
-            currentIfCommand.setTrueList(commandStackList.pop());
+            ifCmdStack.peek().setTrueList(commandStackList.pop());
         }
         ('senao'
         {
@@ -140,12 +141,14 @@ cmdIF :
         command+
         {
             // retira a lista de comandos da pilha e salva na lista de comandos "False"
-            currentIfCommand.setFalseList(commandStackList.pop());
+            ifCmdStack.peek().setFalseList(commandStackList.pop());
         }
         )?
         'fimse'
         {
-            commandStackList.peek().add(currentIfCommand);
+            // adiciona o ultimo Ifcommand da stack de ifs
+            // na stack de comandos
+            commandStackList.peek().add(ifCmdStack.pop());
         }
       ;
 
@@ -210,14 +213,19 @@ expression
         }
         ((OP_SUM | OP_SUB)
         {
+            // salva operador da expressao
             strExpr += _input.LT(-1).getText();
+
+            // cria uma nova expressao binaria com o operador lido
+            // salva o que ja foi lido como o lado esquerdo
+            // e e adicionado na pilha de expressoes
             BinaryExpression bin = new BinaryExpression(_input.LT(-1).getText().charAt(0));
             bin.setLeft(expressionStack.pop());
             expressionStack.push(bin);
         }
         term
         {
-            strExpr += _input.LT(-1).getText();
+            strExpr += _input.LT(-1).getText();                                 // salva ultimo elemento da expressao
             AbstractExpression top = expressionStack.pop();                     // desempilha o ultimo termo adicionado
             BinaryExpression root = (BinaryExpression) expressionStack.pop();   // desempinha a operacao binaria
             root.setRight(top);                                                 // atribui o membro direito da expressao com o ultimo termo
@@ -308,7 +316,9 @@ term :
 
 factor
         :
-        '(' expression ')'
+        '(' {strExpr += _input.LT(-1).getText();}
+            expression 
+        ')'
         | literal
         | ID
         {

@@ -5,9 +5,7 @@ Projeto da Disciplina de Compiladores e Interpretadores cujo o objetivo e a cria
 ## Requisitos Minimos do Projeto
 
 - [X] Possui 2 tipos de variáveis;
-- [/] Possui a estrutura `if`.. `else`;
-  - **10/Sep:** Implementacao quase funcional do `se`/`senao`;
-    - Unico problema que precisa ser resolvido e o do loop infinito/StackOverflow quando ha If`s aninhados;
+- [X] Possui a estrutura `if`.. `else`;
 - [ ] Possui estrutura de controle `while`/`do while`;
 - [X] Operações Aritméticas executadas corretamente;
 - [X] Atribuições realizadas corretamente;
@@ -28,7 +26,7 @@ Projeto da Disciplina de Compiladores e Interpretadores cujo o objetivo e a cria
 
 - [ ] Editor Highlight (simulando uma pequena IDE);
 - [ ] Avaliador de expressões aritméticas;
-  - **05/Sep**: Precisa de uma definicao do professor do que o avaliador precisa fazer
+  - **11/Sep**: Preciso so colocar no codigo para imprimir as expressoes e o resultados conforme forem sendo analisadas
 - [ ] Inserção de Operadores lógicos;
 - [ ] Geração de várias linguagens-alvo;
 - [ ] Uma API Rest para implementação do compilador;
@@ -55,6 +53,6 @@ java -cp antlr-4.13.2-complete.jar org.antlr.v4.Tool PjLang.g4 -o src\io\compile
 ~~- Investigar bug em que variaveis do tipo `texto` recebem valore do tipo `inteiro` e do tipo `real` sem estarem entre parentesis;~~
 ~~- Investigar bug em que variaveis do tipo `texto` nao reconhecem operacoes entre aspas como texto;~~
 - O _parser_ nao consegue diferenciar o "-1" em uma expressao como "5-1" sem que haja um espaco entre o operador e o numero;
-- Comandos `se`/`senao` aninhados causam StackOverflow;
-  - Precisa investigar.
+~~- Comandos `se`/`senao` aninhados causam StackOverflow;~~
+  ~~- Precisa investigar.~~
   
