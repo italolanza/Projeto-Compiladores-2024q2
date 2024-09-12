@@ -25,11 +25,11 @@ public class UnaryExpression extends AbstractExpression {
 	@Override
 	public double evaluate() {
 		switch(this.type) {
-			case Types.INTEGER:
+			case INTEGER:
 				return (double) this.value;
-			case Types.REALNUMBER:
+			case REALNUMBER:
 				return (double) this.value;
-			case Types.TEXT:
+			case TEXT:
 			default:
 				//TODO: Throw exception???
 				return 0;
@@ -49,10 +49,10 @@ public class UnaryExpression extends AbstractExpression {
 	@Override
 	public String toString() {
 		switch(this.type) {
-			case Types.INTEGER:
-			case Types.REALNUMBER:
+			case INTEGER:
+			case REALNUMBER:
 				return Double.toString((double)this.value);
-			case Types.TEXT:
+			case TEXT:
 				return (String)this.value;
 			default:
 				return "<UNKOWN_TYPE>";

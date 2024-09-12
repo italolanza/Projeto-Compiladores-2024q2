@@ -17,7 +17,7 @@ public class MainClass {
 			lexer = new PjLangLexer(CharStreams.fromFileName("input/test-variables.in")); 
  			CommonTokenStream tokenStream = new CommonTokenStream(lexer);
  			parser = new PjLangParser(tokenStream);
-// 			parser.setTrace(true);
+ 			//parser.setTrace(true);
  			
  			System.out.println("Starting Expression Analysis");
  			parser.program();

@@ -1,13 +1,9 @@
-programa meuPrograma
-    variavel a,b: inteiro;
-    variavel c,d: real;
-    variavel x,y: texto;
-    inicio
-    a := 5;
-    b := -5;
-    c := 2.0 + 1.5;
-    d := 2 * 3.14 ;
-    x := "Nao sou um numero!";
-    y := ("2.0 / 1");
-    fim
+programa Teste
+variavel x : inteiro;
+inicio
+    x := 10;
+    
+    enquanto (x > 5) faca
+        x := x - 1;
+fim
 fimprog

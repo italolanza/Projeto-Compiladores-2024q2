@@ -97,8 +97,52 @@ variableDeclaration
         PV
         ;
 
-command : assignment
-        ;
+command
+    : assignment
+    | conditional
+    | loop
+    ;
+
+conditional
+    : 'se' '(' expression ')' 'entao' (command)+ ('senao' (command)+)? 'fimse'
+    {
+        System.out.println("Processing 'se' block...");
+        System.out.println("Condition: " + expressionStack.peek());
+        System.out.println("Found 'fimse'");
+        ArrayList<AbstractCommand> listaIf = commandStackList.pop();
+        ArrayList<AbstractCommand> listaElse = (commandStackList.isEmpty()) ? null : commandStackList.pop();
+        
+        CommandIf cmd = new CommandIf(expressionStack.pop(), listaIf, listaElse);
+        commandStackList.peek().add(cmd);
+    }
+    ;
+
+
+loop
+    : whileLoop
+    | doWhileLoop
+    ;
+
+whileLoop
+    : 'enquanto' '(' expression ')' 'faca' command* 'fimenquanto'
+    {
+        ArrayList<AbstractCommand> loopCommands = commandStackList.pop();
+        CommandWhile cmd = new CommandWhile(expressionStack.pop(), loopCommands);
+        commandStackList.peek().add(cmd);
+    }
+    ;
+
+doWhileLoop
+    : 'faca' command* 'enquanto' '(' expression ')' PV
+    {
+        ArrayList<AbstractCommand> loopCommands = commandStackList.pop();
+        CommandDoWhile cmd = new CommandDoWhile(expressionStack.pop(), loopCommands);
+        commandStackList.peek().add(cmd);
+    }
+    ;
+
+
+
 
 assignment
         : 
