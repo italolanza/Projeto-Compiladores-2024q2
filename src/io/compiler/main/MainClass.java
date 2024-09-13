@@ -15,12 +15,18 @@ import io.compiler.core.Program;
 
 public class MainClass {
 
+	final static private String INPUT_FOLDER = "input";
+	final static private String DEFAULT_FILE = "test-general.in";
+	
 	public static void main(String[] args) {
+		
+		String INPUT_FILE_PATH = INPUT_FOLDER + File.separatorChar + DEFAULT_FILE;
+		
 		try {
 			PjLangLexer  lexer;
 			PjLangParser parser;
-			
-			lexer = new PjLangLexer(CharStreams.fromFileName("input/itens_obrigatorios/item10.in")); 
+					
+			lexer = new PjLangLexer(CharStreams.fromFileName(INPUT_FILE_PATH)); 
  			CommonTokenStream tokenStream = new CommonTokenStream(lexer);
  			parser = new PjLangParser(tokenStream);
  			//parser.setTrace(true);
