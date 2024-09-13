@@ -6,8 +6,9 @@ public class Var {
 	private Types type;
 	private boolean isInitialized;
 	private double value;
-	
-	
+	private boolean isUsed;
+
+
 	public Var(String id, Types type, double value) {
 		super();
 		this.id = id;
@@ -71,5 +72,13 @@ public class Var {
 	public void setValue(double value) {
 		this.value = value;
 		setInitialized(true);
+	}
+
+	public boolean isUsed() {
+		return isUsed;
+	}
+
+	public void setUsed(boolean isUsed) {
+		this.isUsed = isUsed;
 	}
 }

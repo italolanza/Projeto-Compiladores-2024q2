@@ -57,7 +57,26 @@ inicio
     faca
         escreva(b);
         b := b - 1;
+        enquanto (b > 18) faca 
+            escreva(b);
+            b := b - 1;
+        fimenquanto
     enquanto (b > 18);
+
+    escreva("Iniciando do while aninhado: ");
+    faca
+        escreva(b);
+        b := b - 1;
+        faca
+            escreva(b);
+            b := b - 1;
+            enquanto (b > 18) faca 
+                escreva(b);
+                b := b - 1;
+            fimenquanto
+        enquanto (b > 18);
+    enquanto (b > 19);
+    escreva("Do While aninhado finalizado");
 
     escreva("Teste completo finalizado.");
 

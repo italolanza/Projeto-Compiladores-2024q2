@@ -41,6 +41,17 @@ grammar PjLang;
         }
     }
 
+    public void checkUnusedVariables() {
+        for (String id : symbolTable.keySet()) {
+            Var variable = symbolTable.get(id);
+            if (!variable.isUsed()) {
+                // Emite um Warning se a variável foi declarada mas nunca usada
+                System.out.println("Warning: Variável '" + id + "' foi declarada, mas nunca usada.");
+            }
+        }
+    }
+
+
     public Program getProgram() {
         return this.program;        
     }
@@ -80,6 +91,9 @@ program
         {
             program.setSymbolTable(symbolTable);
             program.setCommandList(commandStackList.pop());
+
+            // Chama a verificação de variáveis não usadas
+            // checkUnusedVariables();
         }
         ;
 
@@ -192,7 +206,8 @@ reader :
             
                 // verifica se a variavel existe
                 if (!isDeclared(id)) {
-                    throw new UndefinedExpression("Undeclared Variable: " + id);
+                    // Emite um Warning ao invés de lançar um erro
+                    System.out.println("Warning: Variável '" + id + "' não foi declarada.");
                 }
 
                 // inicializa a variavel que vai receber o valor
@@ -287,7 +302,18 @@ assignment
             
             // verifica se a variavel existe
             if (!isDeclared(id)) {
-                throw new UndefinedExpression("Undeclared Variable: " + id);
+                // Emite um Warning ao invés de lançar um erro
+                System.out.println("Warning: Variável '" + _input.LT(-1).getText() + "' não foi declarada.");
+            }
+
+            // Verifica se a variável foi declarada
+            if (!isDeclared(_input.LT(-1).getText())) {
+                System.out.println("Warning: Variável '" + _input.LT(-1).getText() + "' não foi declarada.");
+            } else {
+                // Marcar a variável como usada
+                symbolTable.get(_input.LT(-1).getText()).setUsed(true);
+                // Marcar como inicializada na tabela de símbolos
+                symbolTable.get(_input.LT(-1).getText()).setInitialized(true);
             }
 
             // salva o ID da variavel para o caso dela nao ter sido inicilizada antes
@@ -448,20 +474,24 @@ factor
         | literal
         | ID
         {
+            String varName  = _input.LT(-1).getText();
+
             // verifica se a variavel existe
-            if (!isDeclared(_input.LT(-1).getText())) {
-                // TODO: Candidato a Warning !!
-                throw new ProjectException("Undeclared Variable: " + _input.LT(-1).getText());
+            if (!isDeclared(varName)) {
+                // Emite um Warning ao invés de lançar um erro
+                System.out.println("Warning: Variável '" + varName + "' não foi declarada.");
             }
+
+            Var v = symbolTable.get(varName);
 
             // verifica se a variavel foi inicializada
-            if (!symbolTable.get(_input.LT(-1).getText()).isInitialized()) {
-                // TODO: Candidato a Warning !!
-                throw new ExpressionException("Variable " + "<" + _input.LT(-1).getText() + ">" + " was not initialized!");
+            if (!symbolTable.get(varName).isInitialized()) {
+                // Emite um Warning se a variável não tiver valor inicial
+                System.out.println("Warning: Variável '" + varName + "' foi usada sem valor inicial.");
+            } else {
+                // Marcar a variável como usada
+                v.setUsed(true);
             }
-
-            
-            Var v = symbolTable.get(_input.LT(-1).getText());
 
             // salva o tipo da variavel caso nao tenha nada salvo
             if (rightSide == null) {    

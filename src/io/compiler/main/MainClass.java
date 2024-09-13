@@ -27,16 +27,14 @@ public class MainClass {
  			
  			System.out.println("Starting Expression Analysis");
  			parser.program();
- 			System.out.println("Analisys Finished!" ); 			
- 			//parser.printDeclaredVariables();
-// 			System.out.println(parser.gerenateExpressionTreeJSON());
+ 			
+			// Chama a verificação de variáveis não usadas
+			parser.checkUnusedVariables();
+ 			System.out.println("Analisys Finished!" );
  			
  			Program prog = parser.getProgram();
- 			
- 			// TODO: Adicionar verificacao do uso de variaveis
- 			
- 			// debug
- 			System.out.println(prog.generateTarget());
+			// debug
+ 			// System.out.println(prog.generateTarget());
  			
  			// cria arquivo
  			try {
