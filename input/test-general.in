@@ -1,7 +1,7 @@
 programa TesteCompletoAvancado
 
-variavel a, b, c : inteiro;
-variavel d, e : real;
+variavel a, b, c , x: inteiro;
+variavel d, e, f : real;
 variavel texto1, texto2, texto3 : texto;
 
 inicio
