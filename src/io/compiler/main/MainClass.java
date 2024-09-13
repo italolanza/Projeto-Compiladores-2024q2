@@ -38,17 +38,18 @@ public class MainClass {
  			// debug
  			System.out.println(prog.generateTarget());
  			
-// 			try {
-//				File f = new File(prog.getName() + ".java");
-//				FileWriter fr = new FileWriter(f);
-//				PrintWriter pr = new PrintWriter(fr);
-//				
-//				pr.println(prog.generateTarget());
-//				pr.close();
-//				
-//			} catch (IOException ex) {
-//				ex.printStackTrace();
-//			}
+ 			// cria arquivo
+ 			try {
+				File f = new File(prog.getName() + ".java");
+				FileWriter fr = new FileWriter(f);
+				PrintWriter pr = new PrintWriter(fr);
+				
+				pr.println(prog.generateTarget());
+				pr.close();
+				
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
