@@ -48,4 +48,10 @@ public class ReadCommand extends AbstractCommand {
 		this.var = var;
 	}
 
+	// @Override
+	// public void execute() {
+	// 	// TODO Auto-generated method stub
+		
+	// }
+
 }

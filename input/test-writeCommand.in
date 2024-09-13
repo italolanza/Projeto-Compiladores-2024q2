@@ -1,0 +1,22 @@
+programa meuPrograma
+	variavel a,b: inteiro;
+	variavel c,d: real;
+	variavel x,y: texto;
+	inicio
+		a := 10;
+		escreva(a);
+		escreva(42);
+		escreva(2.5);
+		escreva(-5);
+		escreva(-3.14);
+		escreva("Ola mundo!");
+		escreva(21 + 21);
+		escreva((21 + 21));
+		
+		se (10 > 5) entao
+			escreva(10);
+		senao
+		    escreva(5);
+		fimse
+	fim
+fimprog

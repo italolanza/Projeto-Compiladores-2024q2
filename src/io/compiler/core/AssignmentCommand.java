@@ -52,4 +52,10 @@ public class AssignmentCommand extends AbstractCommand {
 	public void setExpression(String expression) {
 		this.expression = expression;
 	}
+
+//	@Override
+//	public void execute() {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }

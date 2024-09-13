@@ -15,6 +15,7 @@ public class Program {
 	public String generateTarget() {
 
 		StringBuilder str = new StringBuilder();
+		
 
 		// adiciona/gera cabecalho do programa
 		str.append("import java.util.Scanner;\n");
@@ -29,7 +30,7 @@ public class Program {
 			if (var.getType() == Types.INTEGER) {
 				str.append("    int ");
 			}
-			else if (var.getType() == Types.INTEGER) {
+			else if (var.getType() == Types.REALNUMBER) {
 				str.append("    double ");
 			}
 			else {

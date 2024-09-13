@@ -20,6 +20,8 @@ grammar PjLang;
     private Types rightSide = null;
     private String strExpr = "";
     private Stack<IFCommand> ifCmdStack = new Stack<IFCommand>();
+    private Stack<CommandWhile> whileCmdStack = new Stack<CommandWhile>();
+    private Stack<CommandDoWhile> doWhileCmdStack = new Stack<CommandDoWhile>();
     private AssignmentCommand currentAssignmentCommand;
     private AbstractExpression expStackTop = null;
 
@@ -102,12 +104,98 @@ variableDeclaration
 
 command : 
         assignment
-        | cmdIF
-        | cmdWrite
-        | cmdRead
+        | conditional
+        | loop
+        | reader
+        | writer
         ;
 
-cmdRead :   
+loop
+    : whileLoop
+    | doWhileLoop
+    ;
+
+whileLoop
+    : 'enquanto'
+    {
+        // cria lista uma nova lista de comandos e adiciona na pilha de comandos
+        commandStackList.push(new ArrayList<AbstractCommand>());
+        strExpr = "";
+        whileCmdStack.push(new CommandWhile());
+    }
+    OP 
+    expression
+    OP_REL
+    {
+        // salva o operador operacional na string de expressoes
+        strExpr += _input.LT(-1).getText();
+    }
+    expression
+    CP
+    {
+        // salva expressao/condicional do while
+        whileCmdStack.peek().setCondition(strExpr);
+    }
+    'faca' 
+    command+
+    {
+        // retira a lista de comandos da pilha e salva na lista de comandos "True"
+        whileCmdStack.peek().setLoopCommands(commandStackList.pop());
+    }
+    'fimenquanto'
+    {
+        // TODO: Remove ???
+        // ArrayList<AbstractCommand> loopCommands = commandStackList.pop();
+        // AbstractCommand cmd = new CommandWhile(expressionStack.pop(), loopCommands);
+        // commandStackList.peek().add(cmd);
+
+        // adiciona o ultimo CommandWhile da stack de ifs
+        // na stack de comandos
+        commandStackList.peek().add(whileCmdStack.pop());
+    }
+    ;
+
+doWhileLoop
+    : 'faca'
+    {
+        // cria lista uma nova lista de comandos e adiciona na pilha de comandos
+        commandStackList.push(new ArrayList<AbstractCommand>());
+        strExpr = "";
+        doWhileCmdStack.push(new CommandDoWhile());
+    }
+    command+
+    {
+        // retira a lista de comandos da pilha e salva na lista de comandos "True"
+        doWhileCmdStack.peek().setLoopCommands(commandStackList.pop());
+    }
+    'enquanto'
+    OP 
+    expression
+    OP_REL
+    {
+        // salva o operador operacional na string de expressoes
+        strExpr += _input.LT(-1).getText();
+    }
+    expression
+    CP
+    {
+        // salva expressao/condicional do while
+        doWhileCmdStack.peek().setCondition(strExpr);
+    }
+    PV
+    {
+        // TODO: Remover
+        // ArrayList<AbstractCommand> loopCommands = commandStackList.pop();
+        // AbstractCommand cmd = new CommandDoWhile(expressionStack.pop(), loopCommands);
+        // commandStackList.peek().add(cmd);
+
+        // adiciona o ultimo CommandWhile da stack de ifs
+        // na stack de comandos
+        commandStackList.peek().add(doWhileCmdStack.pop());
+    }
+    ;
+
+reader :   
             'leia'
             OP
             ID
@@ -134,7 +222,7 @@ cmdRead :
             }
         ;
 
-cmdWrite : 
+writer : 
             'escreva'
             {
                 strExpr = "";
@@ -143,7 +231,7 @@ cmdWrite :
             expression
             {
                 // salva expressao lida
-                String exp = strExpr
+                String exp = strExpr;
                 
                 //cria novo comando de escrita
                 AbstractCommand writeCommand = new WriteCommand(exp);
@@ -156,7 +244,7 @@ cmdWrite :
             }
          ;
 
-cmdIF :
+conditional :
         'se' 
         {
             // cria lista uma nova lista de comandos e adiciona na pilha de comandos

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class IFCommand extends AbstractCommand {
 
-	String expression;
+	private String expression;
 	private List<AbstractCommand> trueList;
 	private List<AbstractCommand> falseList;
 	
@@ -69,5 +69,11 @@ public class IFCommand extends AbstractCommand {
 	public void setFalseList(List<AbstractCommand> falseList) {
 		this.falseList = falseList;
 	}
+
+	// @Override
+	// public void execute() {
+	// 	// TODO Auto-generated method stub
+		
+	// }
 
 }

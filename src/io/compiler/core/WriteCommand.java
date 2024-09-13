@@ -27,4 +27,10 @@ public class WriteCommand extends AbstractCommand {
 		this.content = content;
 	}
 
+	// @Override
+	// public void execute() {
+	// 	// TODO Auto-generated method stub
+		
+	// }
+
 }

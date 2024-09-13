@@ -1,0 +1,62 @@
+programa TesteCompletoAvancado
+
+variavel a, b, c : inteiro;
+variavel d, e : real;
+variavel texto1, texto2 : texto;
+
+inicio
+    a := 10;
+    b := 20;
+    c := a + b;
+
+    d := 5.5;
+    e := d / 2.0;
+
+    escreva( "Resultado de a + b: " );
+    escreva(c);
+
+    escreva("Resultado de d / 2: ");
+    escreva(e);
+
+    texto1 := "Olá, " ;
+    texto2 := "Mundo!" ;
+    escreva("Mensagem concatenada: ");
+    escreva(texto1 + texto2);
+
+
+    se (a < b) entao {
+        escreva("a é menor que b");
+
+        se (c > b) entao {
+            escreva("c é maior que b e maior que a");
+        } senao {
+            escreva("c é maior que a, mas menor ou igual a b");
+        }
+    } senao {
+        escreva("a é maior ou igual a b");
+    }
+
+    escreva("Iniciando loop while: ");
+    enquanto (a > 0) faca {
+        escreva(a);
+        a := a - 1;
+
+        escreva("Iniciando while aninhado: ");
+        enquanto (b > 18) faca {
+            escreva(b);
+            b := b - 1;
+        }
+        escreva("While aninhado finalizado");
+    }
+    escreva("Loop while finalizado");
+
+    escreva("Iniciando loop do-while: ");
+    faca {
+        escreva(b);
+        b := b - 1;
+    } enquanto (b > 18);
+
+    escreva("Teste completo finalizado.");
+
+fim
+fimprog
