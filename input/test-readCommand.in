@@ -1,0 +1,19 @@
+programa meuPrograma
+	variavel a,b: inteiro;
+	variavel c,d: real;
+	variavel x,y: texto;
+	inicio
+		leia(a);
+		leia(b);
+		leia(c);
+		leia(d);
+		leia(x);
+		leia(y);
+		
+		se (10 > 5) entao
+			leia(c);
+		senao
+		    leia(x);
+		fimse
+	fim
+fimprog

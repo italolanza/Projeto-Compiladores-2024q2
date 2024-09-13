@@ -3,6 +3,7 @@ package io.compiler.core;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import io.compiler.types.Types;
 import io.compiler.types.Var;
 
 public class Program {
@@ -10,11 +11,11 @@ public class Program {
 	private String name;
 	private HashMap<String, Var> symbolTable = new HashMap<String, Var>();
 	private ArrayList<AbstractCommand> commandList = new ArrayList<AbstractCommand>();
-
-	public void generateTarget() {
+	
+	public String generateTarget() {
 
 		StringBuilder str = new StringBuilder();
-
+		
 
 		// adiciona/gera cabecalho do programa
 		str.append("import java.util.Scanner;\n");
@@ -47,11 +48,10 @@ public class Program {
 		// fim
 		str.append("    }\n");
 		str.append("}");
-
+		
 
 		return str.toString();
 	}
-
 	
 	
 	public HashMap<String, Var> getSymbolTable() {
