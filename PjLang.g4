@@ -15,9 +15,9 @@ grammar PjLang;
     private HashMap<String, Var> symbolTable = new HashMap<String, Var>(); //stores variables names and type
     private ArrayList<Var> currentDecl = new ArrayList<Var>();
     private Types currentType;
-    private Types leftSide = null;
     private String leftSideID = null;
-    private Types rightSide = null;
+    private Types leftSideType = null;
+    private Types rightSideType = null;
     private String strExpr = "";
     private Stack<IFCommand> ifCmdStack = new Stack<IFCommand>();
     private Stack<CommandWhile> whileCmdStack = new Stack<CommandWhile>();
@@ -40,6 +40,17 @@ grammar PjLang;
                 System.out.println(symbolTable.get(id));
         }
     }
+
+    public void checkUnusedVariables() {
+        for (String id : symbolTable.keySet()) {
+            Var variable = symbolTable.get(id);
+            if (!variable.isUsed()) {
+                // Emite um warning se a variavel foi declarada mas nunca usada
+                System.out.println("[Warning]: Variável '" + id + "' foi declarada, mas nunca usada.");
+            }
+        }
+    }
+
 
     public Program getProgram() {
         return this.program;        
@@ -80,6 +91,9 @@ program
         {
             program.setSymbolTable(symbolTable);
             program.setCommandList(commandStackList.pop());
+
+            // Chama a verificação de variáveis não usadas
+            // checkUnusedVariables();
         }
         ;
 
@@ -192,7 +206,8 @@ reader :
             
                 // verifica se a variavel existe
                 if (!isDeclared(id)) {
-                    throw new UndefinedExpression("Undeclared Variable: " + id);
+                    // Emite um warning ao inves de lançar um erro
+                    System.out.println("[Warning]: Variável '" + id + "' não foi declarada.");
                 }
 
                 // inicializa a variavel que vai receber o valor
@@ -205,7 +220,7 @@ reader :
             CP
             PV
             {
-                rightSide = null;
+                rightSideType = null;
             }
         ;
 
@@ -227,7 +242,7 @@ writer :
             CP
             PV
             {
-                rightSide = null;
+                rightSideType = null;
             }
          ;
 
@@ -284,43 +299,57 @@ assignment
         {
             // salva valor do tolken ID
             String id = _input.LT(-1).getText();
-            
-            // verifica se a variavel existe
-            if (!isDeclared(id)) {
-                throw new UndefinedExpression("Undeclared Variable: " + id);
+            Var leftSideVar;
+
+            // verifica se a variavel existe/foi declarada
+            if (isDeclared(id)) {
+                // left side type
+                leftSideType = symbolTable.get(id).getType();
+                leftSideVar = symbolTable.get(id);
+            }
+            else {
+                // cria uma variavel que nao existe para colocado na expressao
+                leftSideVar = new Var(id);
             }
 
-            // salva o ID da variavel para o caso dela nao ter sido inicilizada antes
-            if (!symbolTable.get(id).isInitialized()){
-                leftSideID = id;
-            }
+            leftSideID = id;
 
-            leftSide = symbolTable.get(id).getType();
-            
             // reseta a variavel que armazena a expressao/tolkens lidos e
             // cria nova uma variavel do tipo AssignmentCommand
             strExpr = "";
-            currentAssignmentCommand = new AssignmentCommand(symbolTable.get(id));
+            currentAssignmentCommand = new AssignmentCommand(leftSideVar);
         }
         OP_ASGN
         expression
         PV
         {
-            // verifica se a varaivel e o resultado da expressao possuem tipos compativeis
-            if (leftSide.getValue() != rightSide.getValue()) {
-                if ( leftSide == Types.REALNUMBER && rightSide == Types.INTEGER) {
-                    // TODO: Candidato a Warning de perda de precisao!!
-                }
-                else {
-                    // variaveis de tipos nao compativeis
-                    throw new AssignmentException("Type Mismatching on Assignment: left side= " + leftSide + ", right side= " + rightSide);
-                }
+            // verifica se a variavel existe/foi declarada
+            if (!isDeclared(leftSideID)) {
+                // Emite um warning de Variavel Nao Declarada
+                System.out.println("[Warning]: Variavel '" + leftSideID + "' esta sendo usada porem nao foi declarada!");
+                
+                // deixa os dois lados com o mesmo tipo para nao quebrar o restante do as checagens
+                leftSideType = rightSideType;
             }
+            else {
+                // variavel existe/foi declarada
+                // primeira vez que a variavel esta sendo inicializada
+                if (!symbolTable.get(leftSideID).isInitialized()){
+                    symbolTable.get(leftSideID).setInitialized(true);
+                    symbolTable.get(leftSideID).setUsed(true);
+                    symbolTable.get(leftSideID).setValue(expressionStack.peek().evaluate());
+                }
 
-            // primeira vez que a variavel esta sendo inicializada
-            if (!symbolTable.get(leftSideID).isInitialized()){
-                symbolTable.get(leftSideID).setInitialized(true);
-                symbolTable.get(leftSideID).setValue(expressionStack.peek().evaluate());
+                // verifica se a varaivel e o resultado da expressao possuem tipos compativeis
+                if (leftSideType.getValue() != rightSideType.getValue()) {
+                    if ( leftSideType == Types.REALNUMBER && rightSideType == Types.INTEGER) {
+                        System.out.println("[Warning]: Trying to assign a type '" + rightSideType + "' to a '" + leftSideType + "' type variable. Are you sure?" );
+                    }
+                    else {
+                        // variaveis de tipos nao compativeis
+                        throw new AssignmentException("Type Mismatching on Assignment: left side= " + leftSideType + ", right side= " + rightSideType);
+                    }
+                }
             }
 
             // salva expressao lida no AssignmentCommand
@@ -373,9 +402,8 @@ expression
                 if ( leftOperatorType != rightOperatorType ) {
                     // atribuindo um numero real a uma variavel do tipo inteira
                     if ( leftOperatorType == Types.INTEGER && rightOperatorType == Types.REALNUMBER) {
-                        // TODO: Candidato a Warning de perda de precisao!!
-                        // throw new ExpressionException("Operator type mismatching: left type= " + leftOperatorType + ", right type= " + rightOperatorType);    
-
+                        // TODO: Candidato a warning de perda de precisao!!
+                        // throw new ExpressionException("Operator type mismatching: left type= " + leftOperatorType + ", right type= " + rightOperatorType);
                     }
                 }
             }
@@ -435,7 +463,7 @@ term :
                 throw new ExpressionException("Operator type mismatching. Trying to operate with a text type!");
             }
         }
-        rightSide = expressionStack.peek().evaluateType();
+        rightSideType = expressionStack.peek().evaluateType();
     }
      ;
 
@@ -448,30 +476,34 @@ factor
         | literal
         | ID
         {
+            String varName  = _input.LT(-1).getText();
+
             // verifica se a variavel existe
-            if (!isDeclared(_input.LT(-1).getText())) {
-                // TODO: Candidato a Warning !!
-                throw new ProjectException("Undeclared Variable: " + _input.LT(-1).getText());
+            if (!isDeclared(varName)) {
+                // Emite um warning ao invés de lançar um erro
+                System.out.println("[Warning]: Variável '" + varName + "' não foi declarada.");
             }
+
+            Var v = symbolTable.get(varName);
 
             // verifica se a variavel foi inicializada
-            if (!symbolTable.get(_input.LT(-1).getText()).isInitialized()) {
-                // TODO: Candidato a Warning !!
-                throw new ExpressionException("Variable " + "<" + _input.LT(-1).getText() + ">" + " was not initialized!");
+            if (!symbolTable.get(varName).isInitialized()) {
+                // Emite um warning se a variável não tiver valor inicial
+                System.out.println("[Warning]: Variável '" + varName + "' esta sendo usada porem nao foi inicializada.");
+            } else {
+                // Marcar a variável como usada
+                v.setUsed(true);
             }
 
-            
-            Var v = symbolTable.get(_input.LT(-1).getText());
-
             // salva o tipo da variavel caso nao tenha nada salvo
-            if (rightSide == null) {    
-                rightSide = v.getType();
+            if (rightSideType == null) {    
+                rightSideType = v.getType();
             }
             // substitui o valor do factor se o tipo de variavel possuir um valor maior
             // inteiro == 1, real == 2, texto == 3;
             else {
-                if (v.getType().getValue() > rightSide.getValue()) {
-                    rightSide = v.getType();
+                if (v.getType().getValue() > rightSideType.getValue()) {
+                    rightSideType = v.getType();
                 }
             }
             
@@ -485,12 +517,12 @@ literal
         :
         NUM_INT
         {
-            if (rightSide == null) {
-                rightSide = Types.INTEGER;
+            if (rightSideType == null) {
+                rightSideType = Types.INTEGER;
             }
             else {
-                if (rightSide.getValue() < Types.INTEGER.getValue()) {
-                    rightSide = Types.INTEGER;
+                if (rightSideType.getValue() < Types.INTEGER.getValue()) {
+                    rightSideType = Types.INTEGER;
                 }
             }
             UnaryExpression element = new UnaryExpression(Double.parseDouble(_input.LT(-1).getText()), Types.INTEGER);
@@ -499,12 +531,12 @@ literal
         }
         | NUM_REAL
         { 
-            if (rightSide == null) {
-                rightSide = Types.REALNUMBER;
+            if (rightSideType == null) {
+                rightSideType = Types.REALNUMBER;
             }
             else {
-                if (rightSide.getValue() < Types.REALNUMBER.getValue()) {
-                    rightSide = Types.REALNUMBER;
+                if (rightSideType.getValue() < Types.REALNUMBER.getValue()) {
+                    rightSideType = Types.REALNUMBER;
                 }
             }
             UnaryExpression element = new UnaryExpression(Double.parseDouble(_input.LT(-1).getText()), Types.REALNUMBER);
@@ -512,12 +544,12 @@ literal
         }
         | STRING
         {
-            if (rightSide == null) {
-                rightSide = Types.TEXT;
+            if (rightSideType == null) {
+                rightSideType = Types.TEXT;
             }
             else {
-                if (rightSide.getValue() < Types.TEXT.getValue()) {
-                    rightSide = Types.TEXT;
+                if (rightSideType.getValue() < Types.TEXT.getValue()) {
+                    rightSideType = Types.TEXT;
                 }
             }
             UnaryExpression element = new UnaryExpression(_input.LT(-1).getText(), Types.TEXT);

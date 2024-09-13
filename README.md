@@ -6,21 +6,18 @@ Projeto da Disciplina de Compiladores e Interpretadores cujo o objetivo e a cria
 
 - [X] Possui 2 tipos de variáveis;
 - [X] Possui a estrutura `if`.. `else`;
-- [ ] Possui estrutura de controle `while`/`do while`;
+- [X] Possui estrutura de controle `while`/`do while`;
 - [X] Operações Aritméticas executadas corretamente;
 - [X] Atribuições realizadas corretamente;
 - [X] Possui operações de _Entrada_ e _Saída_;
 - [X] Aceita números decimais;
 - [X] Verificar se a variável já foi previamente declarada;
-- [ ] Verificar se a variável foi declarada e não foi usada;
+- [X] Verificar se a variável foi declarada e não foi usada;
 - [X] Verificar se uma variável está sendo usada sem ter valor inicial;
 - Warnings:
-  - [ ] A cada utilização de uma variável, é necessário verificar se a mesma já foi declarada.
-    - **Obs.**: Acho que e so alterar o erro que a gente lanca por uma mensagem de warning
-  - [ ] Variáveis que foram declaradas e não foram usadas
-    - **Obs.**: Acho que e so analisar ao final da analise quais variaveis foram inicializadas ou nao
-  - [ ] Variáveis que foram usadas e não tem valor inicial (controle na tabela de símbolos)
-    - **Obs.**: Acho que e so analisar ao final da analise quais variaveis foram inicializadas ou nao
+  - [X] A cada utilização de uma variável, é necessário verificar se a mesma já foi declarada.
+  - [X] Variáveis que foram declaradas e não foram usadas
+  - [X] Variáveis que foram usadas e não tem valor inicial (controle na tabela de símbolos)
 
 ## Itens opicionais
 

@@ -2,7 +2,7 @@ programa TesteCompletoAvancado
 
 variavel a, b, c : inteiro;
 variavel d, e : real;
-variavel texto1, texto2 : texto;
+variavel texto1, texto2, texto3 : texto;
 
 inicio
     a := 10;
@@ -20,6 +20,8 @@ inicio
 
     texto1 := "Ola, " ;
     texto2 := "Mundo!" ;
+    texto4 := texto3;
+    
     escreva("Mensagem concatenada: ");
 
 
@@ -57,7 +59,26 @@ inicio
     faca
         escreva(b);
         b := b - 1;
+        enquanto (b > 18) faca 
+            escreva(b);
+            b := b - 1;
+        fimenquanto
     enquanto (b > 18);
+
+    escreva("Iniciando do while aninhado: ");
+    faca
+        escreva(b);
+        b := b - 1;
+        faca
+            escreva(b);
+            b := b - 1;
+            enquanto (b > 18) faca 
+                escreva(b);
+                b := b - 1;
+            fimenquanto
+        enquanto (b > 18);
+    enquanto (b > 19);
+    escreva("Do While aninhado finalizado");
 
     escreva("Teste completo finalizado.");
 
