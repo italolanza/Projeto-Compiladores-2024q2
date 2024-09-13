@@ -2,7 +2,7 @@ programa TesteCompletoAvancado
 
 variavel a, b, c : inteiro;
 variavel d, e : real;
-variavel texto1, texto2 : texto;
+variavel texto1, texto2, texto3 : texto;
 
 inicio
     a := 10;
@@ -20,6 +20,8 @@ inicio
 
     texto1 := "Ola, " ;
     texto2 := "Mundo!" ;
+    texto4 := texto3;
+    
     escreva("Mensagem concatenada: ");
 
 

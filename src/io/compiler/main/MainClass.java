@@ -25,7 +25,7 @@ public class MainClass {
  			parser = new PjLangParser(tokenStream);
  			//parser.setTrace(true);
  			
- 			System.out.println("Starting Expression Analysis");
+ 			System.out.println("Starting Code Analysis");
  			parser.program();
  			
 			// Chama a verificação de variáveis não usadas
