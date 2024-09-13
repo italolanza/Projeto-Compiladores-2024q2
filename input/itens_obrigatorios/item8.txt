@@ -1,0 +1,5 @@
+programa variavelIndefinida
+inicio
+y := 10;  // Deve emitir um aviso ou erro
+fim
+fimprog

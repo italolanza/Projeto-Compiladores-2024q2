@@ -1,0 +1,9 @@
+programa teste
+variavel x, y : inteiro;
+variavel z : real;
+inicio
+x := 10;
+y := 5;
+z := 12.5;
+fim
+fimprog

@@ -1,0 +1,10 @@
+programa laço2
+variavel i : inteiro;
+inicio
+i := 0;
+faca
+    escreva(i);
+    i := i + 1;
+enquanto (i < 5);
+fim
+fimprog

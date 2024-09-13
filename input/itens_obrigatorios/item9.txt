@@ -1,0 +1,7 @@
+programa variavelNaoUsada
+variavel x : inteiro;
+variavel y : inteiro;
+inicio
+x := 10;  // Variável y foi declarada mas não foi usada
+fim
+fimprog

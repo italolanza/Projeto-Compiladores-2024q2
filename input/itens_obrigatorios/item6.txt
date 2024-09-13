@@ -1,0 +1,7 @@
+programa io
+variavel x : inteiro;
+inicio
+leia(x);
+escreva("O valor lido foi: ", x);
+fim
+fimprog

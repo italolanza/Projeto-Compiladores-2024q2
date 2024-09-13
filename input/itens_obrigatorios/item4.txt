@@ -1,0 +1,9 @@
+programa aritmetica
+variavel x, y, resultado : inteiro;
+inicio
+x := 10;
+y := 5;
+resultado := (x + y) * (x - y);
+escreva(resultado);
+fim
+fimprog

@@ -1,0 +1,7 @@
+programa decimais
+variavel x : real;
+inicio
+x := 12.34;
+escreva(x);
+fim
+fimprog

@@ -1,0 +1,8 @@
+programa atribuicao
+variavel a, b : inteiro;
+inicio
+a := 10;
+b := a + 5;
+escreva(b);
+fim
+fimprog

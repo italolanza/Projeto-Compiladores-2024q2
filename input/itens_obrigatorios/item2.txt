@@ -1,0 +1,12 @@
+programa condicional
+variavel a, b : inteiro;
+inicio
+a := 10;
+b := 20;
+se (a > b) entao
+    escreva("A é maior que B");
+senao
+    escreva("A não é maior que B");
+fimse
+fim
+fimprog

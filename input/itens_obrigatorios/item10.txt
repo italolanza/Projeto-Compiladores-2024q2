@@ -1,0 +1,6 @@
+programa variavelSemInicializacao
+variavel x : inteiro;
+inicio
+escreva(x);  // Deve emitir um aviso de que 'x' não foi inicializada
+fim
+fimprog
