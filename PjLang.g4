@@ -18,6 +18,11 @@ grammar PjLang;
     private Types leftSide = null;
     private String leftSideID = null;
     private Types rightSide = null;
+    private String strExpr = "";
+    private Stack<IFCommand> ifCmdStack = new Stack<IFCommand>();
+    private Stack<CommandWhile> whileCmdStack = new Stack<CommandWhile>();
+    private Stack<CommandDoWhile> doWhileCmdStack = new Stack<CommandDoWhile>();
+    private AssignmentCommand currentAssignmentCommand;
     private AbstractExpression expStackTop = null;
 
     private Stack<ArrayList<AbstractCommand>> commandStackList = new Stack<ArrayList<AbstractCommand>>();
@@ -97,26 +102,13 @@ variableDeclaration
         PV
         ;
 
-command
-    : assignment
-    | conditional
-    | loop
-    ;
-
-conditional
-    : 'se' '(' expression ')' 'entao' (command)+ ('senao' (command)+)? 'fimse'
-    {
-        System.out.println("Processing 'se' block...");
-        System.out.println("Condition: " + expressionStack.peek());
-        System.out.println("Found 'fimse'");
-        ArrayList<AbstractCommand> listaIf = commandStackList.pop();
-        ArrayList<AbstractCommand> listaElse = (commandStackList.isEmpty()) ? null : commandStackList.pop();
-        
-        CommandIf cmd = new CommandIf(expressionStack.pop(), listaIf, listaElse);
-        commandStackList.peek().add(cmd);
-    }
-    ;
-
+command : 
+        assignment
+        | conditional
+        | loop
+        | reader
+        | writer
+        ;
 
 loop
     : whileLoop
@@ -124,41 +116,191 @@ loop
     ;
 
 whileLoop
-    : 'enquanto' '(' expression ')' 'faca' command* 'fimenquanto'
+    : 'enquanto'
     {
-        ArrayList<AbstractCommand> loopCommands = commandStackList.pop();
-        CommandWhile cmd = new CommandWhile(expressionStack.pop(), loopCommands);
-        commandStackList.peek().add(cmd);
+        // cria lista uma nova lista de comandos e adiciona na pilha de comandos
+        commandStackList.push(new ArrayList<AbstractCommand>());
+        strExpr = "";
+        whileCmdStack.push(new CommandWhile());
+    }
+    OP 
+    expression
+    OP_REL
+    {
+        // salva o operador operacional na string de expressoes
+        strExpr += _input.LT(-1).getText();
+    }
+    expression
+    CP
+    {
+        // salva expressao/condicional do while
+        whileCmdStack.peek().setCondition(strExpr);
+    }
+    'faca' 
+    command+
+    {
+        // retira a lista de comandos da pilha e salva na lista de comandos "True"
+        whileCmdStack.peek().setLoopCommands(commandStackList.pop());
+    }
+    'fimenquanto'
+    {
+        // adiciona o ultimo CommandWhile da stack de ifs
+        // na stack de comandos
+        commandStackList.peek().add(whileCmdStack.pop());
     }
     ;
 
 doWhileLoop
-    : 'faca' command* 'enquanto' '(' expression ')' PV
+    : 'faca'
     {
-        ArrayList<AbstractCommand> loopCommands = commandStackList.pop();
-        CommandDoWhile cmd = new CommandDoWhile(expressionStack.pop(), loopCommands);
-        commandStackList.peek().add(cmd);
+        // cria uma nova lista de comandos e adiciona na pilha de comandos
+        commandStackList.push(new ArrayList<AbstractCommand>());
+        strExpr = "";  // Reseta a string de expressão
+        doWhileCmdStack.push(new CommandDoWhile());  // Adiciona o comando do-while à pilha
+    }
+    command+
+    {
+        // remove a lista de comandos da pilha e a salva no comando do-while
+        doWhileCmdStack.peek().setLoopCommands(commandStackList.pop());
+    }
+    'enquanto' {strExpr = "";}
+    OP 
+    expression
+    OP_REL
+    {
+        // pega o operador relacional
+        strExpr += _input.LT(-1).getText();
+    }
+    expression
+    CP PV
+    {
+        // armazena a condição final do 'do-while'
+        doWhileCmdStack.peek().setCondition(strExpr);
+
+        // adiciona o último CommandDoWhile à pilha de comandos
+        commandStackList.peek().add(doWhileCmdStack.pop());
     }
     ;
 
+reader :   
+            'leia'
+            OP
+            ID
+            {
+                // salva valor do tolken ID
+                String id = _input.LT(-1).getText();
+            
+                // verifica se a variavel existe
+                if (!isDeclared(id)) {
+                    throw new UndefinedExpression("Undeclared Variable: " + id);
+                }
 
+                // inicializa a variavel que vai receber o valor
+                symbolTable.get(id).setInitialized(true);
+                
+                // cria o commando de leitura e adiciona na lista de comandos
+                AbstractCommand readCommand = new ReadCommand(symbolTable.get(id));
+                commandStackList.peek().add(readCommand);
+            }
+            CP
+            PV
+            {
+                rightSide = null;
+            }
+        ;
 
+writer : 
+            'escreva'
+            {
+                strExpr = "";
+            }
+            OP
+            expression
+            {
+                // salva expressao lida
+                String exp = strExpr;
+                
+                //cria novo comando de escrita
+                AbstractCommand writeCommand = new WriteCommand(exp);
+                commandStackList.peek().add(writeCommand);
+            }
+            CP
+            PV
+            {
+                rightSide = null;
+            }
+         ;
+
+conditional :
+        'se' 
+        {
+            // cria lista uma nova lista de comandos e adiciona na pilha de comandos
+            commandStackList.push(new ArrayList<AbstractCommand>());
+            strExpr = "";
+            ifCmdStack.push(new IFCommand());
+        }
+        OP
+        expression
+        OP_REL
+        {
+            // salva o operador operacional na string de expressoes
+            strExpr += _input.LT(-1).getText();
+        }
+        expression
+        CP
+        {
+            // salva expressao/condicional do If
+            ifCmdStack.peek().setExpression(strExpr);
+        }
+        'entao'
+        command+
+        {
+            // retira a lista de comandos da pilha e salva na lista de comandos "True"
+            ifCmdStack.peek().setTrueList(commandStackList.pop());
+        }
+        ('senao'
+        {
+            // cria uma nova entrada na pilha para 
+            // armazenar os comandos de dentro do "False"
+            commandStackList.push(new ArrayList<AbstractCommand>());
+        }
+        command+
+        {
+            // retira a lista de comandos da pilha e salva na lista de comandos "False"
+            ifCmdStack.peek().setFalseList(commandStackList.pop());
+        }
+        )?
+        'fimse'
+        {
+            // adiciona o ultimo Ifcommand da stack de ifs
+            // na stack de comandos
+            commandStackList.peek().add(ifCmdStack.pop());
+        }
+      ;
 
 assignment
         : 
         ID
         {
+            // salva valor do tolken ID
+            String id = _input.LT(-1).getText();
+            
             // verifica se a variavel existe
-            if (!isDeclared(_input.LT(-1).getText())) {
-                throw new UndefinedExpression("Undeclared Variable: " + _input.LT(-1).getText());
+            if (!isDeclared(id)) {
+                throw new UndefinedExpression("Undeclared Variable: " + id);
             }
 
             // salva o ID da variavel para o caso dela nao ter sido inicilizada antes
-            if (!symbolTable.get(_input.LT(-1).getText()).isInitialized()){
-                leftSideID = _input.LT(-1).getText();
+            if (!symbolTable.get(id).isInitialized()){
+                leftSideID = id;
             }
 
-            leftSide = symbolTable.get(_input.LT(-1).getText()).getType();
+            leftSide = symbolTable.get(id).getType();
+            
+            // reseta a variavel que armazena a expressao/tolkens lidos e
+            // cria nova uma variavel do tipo AssignmentCommand
+            strExpr = "";
+            currentAssignmentCommand = new AssignmentCommand(symbolTable.get(id));
         }
         OP_ASGN
         expression
@@ -174,26 +316,42 @@ assignment
                     throw new AssignmentException("Type Mismatching on Assignment: left side= " + leftSide + ", right side= " + rightSide);
                 }
             }
-                       
+
+            // primeira vez que a variavel esta sendo inicializada
             if (!symbolTable.get(leftSideID).isInitialized()){
                 symbolTable.get(leftSideID).setInitialized(true);
                 symbolTable.get(leftSideID).setValue(expressionStack.peek().evaluate());
             }
+
+            // salva expressao lida no AssignmentCommand
+            // e adiciona o novo comando na stack de comandos
+            currentAssignmentCommand.setExpression(strExpr);
+            commandStackList.peek().add(currentAssignmentCommand);
         }
         ;
 
 
 expression
         :
-        term
+        term 
+        {
+            strExpr += _input.LT(-1).getText();
+        }
         ((OP_SUM | OP_SUB)
         {
+            // salva operador da expressao
+            strExpr += _input.LT(-1).getText();
+
+            // cria uma nova expressao binaria com o operador lido
+            // salva o que ja foi lido como o lado esquerdo
+            // e e adicionado na pilha de expressoes
             BinaryExpression bin = new BinaryExpression(_input.LT(-1).getText().charAt(0));
             bin.setLeft(expressionStack.pop());
             expressionStack.push(bin);
         }
         term
         {
+            strExpr += _input.LT(-1).getText();                                 // salva ultimo elemento da expressao
             AbstractExpression top = expressionStack.pop();                     // desempilha o ultimo termo adicionado
             BinaryExpression root = (BinaryExpression) expressionStack.pop();   // desempinha a operacao binaria
             root.setRight(top);                                                 // atribui o membro direito da expressao com o ultimo termo
@@ -284,7 +442,9 @@ term :
 
 factor
         :
-        '(' expression ')'
+        '(' {strExpr += _input.LT(-1).getText();}
+            expression 
+        ')'
         | literal
         | ID
         {
@@ -375,7 +535,7 @@ NUM_REAL : ('-')?[0-9]+'.'[0-9]+
 NUMBER : NUM_INT | NUM_REAL
        ;
 
-STRING : '"' ( [a-z] | [A-Z] | [0-9] | ',' | '.' | ' ' | '-' | '+' | '*' | '/' | '!' | '?' )* '"'
+STRING : '"' ( [a-z] | [A-Z] | [0-9] | ',' | '.' | ' ' | '-' | '+' | '*' | '/' | '!' | '?' | ':' )* '"'
        ;
 
 ID : [a-zA-Z_] [a-zA-Z_0-9]*
@@ -406,7 +566,13 @@ DP : ':'
    ;
 
 PV : ';'
-   ;			
+   ;
+
+OP : '('
+   ;
+
+CP : ')'
+   ;
 
 WS :  ( ' ' | '\n' | '\r' | '\t' ) -> skip
    ;

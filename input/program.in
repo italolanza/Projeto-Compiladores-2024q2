@@ -1,7 +1,7 @@
 programa meuPrograma
 	variavel a,b: inteiro;
 	variavel c,d: real;
-	variavel x,y: text;
+	variavel x,y: texto;
 	inicio
 		escreva("Hello World");
 		escreva("Fim do programa");
@@ -20,7 +20,5 @@ programa meuPrograma
 		senao
 		   escreva("b negativo");
 		fimse
-		
-		
 	fim
 fimprog

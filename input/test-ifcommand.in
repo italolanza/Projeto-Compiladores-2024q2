@@ -1,0 +1,24 @@
+programa meuPrograma
+	variavel a,b: inteiro;
+	variavel c,d: real;
+	variavel x,y: texto;
+	inicio
+		a := 2;
+		b := -1;
+	
+		se ( (a + 2) >= 0 ) entao
+			b := 10;
+		fimse
+	
+	
+		se ((a + 2) >= (5 - 1)) entao
+			b := 10;
+		fimse
+		
+		se (a < b) entao
+			b := a;
+		senao
+			a := b;
+		fimse
+	fim
+fimprog
