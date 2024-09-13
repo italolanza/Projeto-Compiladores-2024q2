@@ -29,7 +29,7 @@ public class AssignmentCommand extends AbstractCommand {
 		
 		str.append("    ");
 		str.append(var.getId());
-		str.append(" := ");
+		str.append(" = ");
 		str.append(expression);
 		str.append(" ;\n");
 		

@@ -144,11 +144,6 @@ whileLoop
     }
     'fimenquanto'
     {
-        // TODO: Remove ???
-        // ArrayList<AbstractCommand> loopCommands = commandStackList.pop();
-        // AbstractCommand cmd = new CommandWhile(expressionStack.pop(), loopCommands);
-        // commandStackList.peek().add(cmd);
-
         // adiciona o ultimo CommandWhile da stack de ifs
         // na stack de comandos
         commandStackList.peek().add(whileCmdStack.pop());
@@ -158,39 +153,31 @@ whileLoop
 doWhileLoop
     : 'faca'
     {
-        // cria lista uma nova lista de comandos e adiciona na pilha de comandos
+        // cria uma nova lista de comandos e adiciona na pilha de comandos
         commandStackList.push(new ArrayList<AbstractCommand>());
-        strExpr = "";
-        doWhileCmdStack.push(new CommandDoWhile());
+        strExpr = "";  // Reseta a string de expressão
+        doWhileCmdStack.push(new CommandDoWhile());  // Adiciona o comando do-while à pilha
     }
     command+
     {
-        // retira a lista de comandos da pilha e salva na lista de comandos "True"
+        // remove a lista de comandos da pilha e a salva no comando do-while
         doWhileCmdStack.peek().setLoopCommands(commandStackList.pop());
     }
-    'enquanto'
+    'enquanto' {strExpr = "";}
     OP 
     expression
     OP_REL
     {
-        // salva o operador operacional na string de expressoes
+        // pega o operador relacional
         strExpr += _input.LT(-1).getText();
     }
     expression
-    CP
+    CP PV
     {
-        // salva expressao/condicional do while
+        // armazena a condição final do 'do-while'
         doWhileCmdStack.peek().setCondition(strExpr);
-    }
-    PV
-    {
-        // TODO: Remover
-        // ArrayList<AbstractCommand> loopCommands = commandStackList.pop();
-        // AbstractCommand cmd = new CommandDoWhile(expressionStack.pop(), loopCommands);
-        // commandStackList.peek().add(cmd);
 
-        // adiciona o ultimo CommandWhile da stack de ifs
-        // na stack de comandos
+        // adiciona o último CommandDoWhile à pilha de comandos
         commandStackList.peek().add(doWhileCmdStack.pop());
     }
     ;
@@ -548,7 +535,7 @@ NUM_REAL : ('-')?[0-9]+'.'[0-9]+
 NUMBER : NUM_INT | NUM_REAL
        ;
 
-STRING : '"' ( [a-z] | [A-Z] | [0-9] | ',' | '.' | ' ' | '-' | '+' | '*' | '/' | '!' | '?' )* '"'
+STRING : '"' ( [a-z] | [A-Z] | [0-9] | ',' | '.' | ' ' | '-' | '+' | '*' | '/' | '!' | '?' | ':' )* '"'
        ;
 
 ID : [a-zA-Z_] [a-zA-Z_0-9]*
