@@ -4,9 +4,9 @@ inicio
 a := 10;
 b := 20;
 se (a > b) entao
-    escreva("A é maior que B");
+    escreva("A eh maior que B");
 senao
-    escreva("A não é maior que B");
+    escreva("A nao eh maior que B");
 fimse
 fim
 fimprog

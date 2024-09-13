@@ -1,4 +1,4 @@
-programa laço2
+programa laco2
 variavel i : inteiro;
 inicio
 i := 0;

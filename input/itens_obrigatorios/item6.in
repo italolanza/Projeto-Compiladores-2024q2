@@ -2,6 +2,7 @@ programa io
 variavel x : inteiro;
 inicio
 leia(x);
-escreva("O valor lido foi: ", x);
+escreva("O valor lido foi: ");
+escreva(x);
 fim
 fimprog

@@ -1,5 +1,10 @@
 programa variavelIndefinida
+variavel y : inteiro;
+variavel y : inteiro;
 inicio
-y := 10;  // Deve emitir um aviso ou erro
+
+y := 10; 
+
+
 fim
 fimprog
